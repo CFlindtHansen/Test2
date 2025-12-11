@@ -1,0 +1,25 @@
+name: Mirror main to public repo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # henter hele historikken, vigtig for forced pushes
+
+      - name: Push main branch to public mirror
+        env:
+          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+          TARGET_REPO: CFlindtHansen/Test2
+        run: |
+          git remote add mirror https://${MIRROR_TOKEN}@github.com/${TARGET_REPO}.git
+          git push mirror main --force
