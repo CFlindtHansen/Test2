@@ -14,7 +14,11 @@ jobs:
       - name: Checkout source repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # hele historikken
+          fetch-depth: 0
+
+      - name: Remove GitHub Actions default auth
+        run: |
+          git config --unset-all http.https://github.com/.extraheader || true
 
       - name: Configure git
         run: |
@@ -25,8 +29,6 @@ jobs:
         env:
           MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
         run: |
-          # Til debug:
-          echo "Remote URL: https://github.com/CFlindtHansen/Test2.git"
-
+          echo "Pushing to mirror repo..."
           git remote add mirror https://${MIRROR_TOKEN}@github.com/CFlindtHansen/Test2.git
           git push mirror main --force
